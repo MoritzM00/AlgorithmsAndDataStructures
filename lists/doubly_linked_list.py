@@ -1,5 +1,8 @@
+from typing import Any
+
+
 class DoublyLinkedListNode:
-    def __init__(self, value=None):
+    def __init__(self, value: Any = None):
         self.value = value
         self.prev = None
         self.next = None
@@ -27,20 +30,36 @@ class LinkedList:
 
         self.free_list = LinkedList()
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
+        """
+        Returns true if the list is emtpy.
+
+        :return: true if list is empty
+        """
         return self.head.next == self.head
 
-    def first(self):
+    def first(self) -> DoublyLinkedListNode:
+        """
+        Returns the first element in the list
+        :return: the first element
+        """
         if self.is_empty():
             raise ValueError("empty list")
         return self.head.next
 
-    def last(self):
+    def last(self) -> DoublyLinkedListNode:
+        """
+        Returns the last element in the list
+        :return: the last element
+        """
         if self.is_empty():
             raise ValueError("empty list")
         return self.head.prev
 
-    def splice(self, a, b, t):
+    def splice(self, a: DoublyLinkedListNode,
+               b: DoublyLinkedListNode,
+               t: DoublyLinkedListNode) \
+            -> None:
         """
         Cuts out the sublist from a to b and insert after t.
         :param a: from
@@ -67,7 +86,9 @@ class LinkedList:
         t.next = a
         t_.prev = b
 
-    def move_after(self, some_node, after):
+    def move_after(self, some_node: DoublyLinkedListNode,
+                   after: DoublyLinkedListNode) \
+            -> None:
         """
         Moves some_node behind the node after
         :param some_node: some node in the list
@@ -76,7 +97,7 @@ class LinkedList:
         """
         self.splice(some_node, some_node, after)
 
-    def move_to_front(self, node):
+    def move_to_front(self, node: DoublyLinkedListNode) -> None:
         """
         Moves the given node to the front of the list.
         :param node: the new front of the list
@@ -84,7 +105,7 @@ class LinkedList:
         """
         self.move_after(node, self.head)
 
-    def move_to_back(self, node):
+    def move_to_back(self, node: DoublyLinkedListNode) -> None:
         """
         Moves the given node to the back of the list.
 
@@ -93,7 +114,7 @@ class LinkedList:
         """
         self.move_after(node, self.head.prev)
 
-    def remove(self, node):
+    def remove(self, node: DoublyLinkedListNode) -> None:
         """
         Removes the given node.
         :param node: the node to remove
@@ -101,21 +122,22 @@ class LinkedList:
         """
         self.move_after(node, self.free_list.head)
 
-    def pop_front(self):
+    def pop_front(self) -> None:
         """
         Pops off the front element.
         :return: None
         """
         self.remove(self.first())
 
-    def pop_back(self):
+    def pop_back(self) -> None:
         """
         Pop off the tail
         :return: None
         """
         self.remove(self.last())
 
-    def insert_after(self, value, node):
+    def insert_after(self, value: Any, node: DoublyLinkedListNode) \
+            -> DoublyLinkedListNode:
         """
         Inserts the given value after the given node.
         :param value: the value to insert
@@ -128,7 +150,8 @@ class LinkedList:
         a_.value = value  # and fill it with the right content
         return a_
 
-    def insert_before(self, value, node):
+    def insert_before(self, value: Any, node: DoublyLinkedListNode) \
+            -> DoublyLinkedListNode:
         """
         Inserts the given value before the given node.
         :param value: the value to insert
@@ -137,7 +160,7 @@ class LinkedList:
         """
         return self.insert_after(value, node.prev)
 
-    def push_front(self, value):
+    def push_front(self, value: Any) -> None:
         """
         Pushes the given value to the head of the list
         :param value: the new head
@@ -145,7 +168,7 @@ class LinkedList:
         """
         self.insert_after(value, self.head)
 
-    def push_back(self, value):
+    def push_back(self, value: Any) -> None:
         """
         Pushes the given value to the tail of the list
         :param value: the new tail
@@ -153,9 +176,10 @@ class LinkedList:
         """
         self.insert_after(value, self.last())
 
-    def concat(self, other_list):
+    def concat(self, other_list) -> None:
         """
         Concatenates this list with other_list
+        :type other_list: LinkedList
         :param other_list: the list to concatenate
         :return: None
         """
@@ -163,7 +187,7 @@ class LinkedList:
                     other_list.last(),
                     self.last())
 
-    def clear_all(self):
+    def clear_all(self) -> None:
         """
         Clears the list in constant time.
 
@@ -171,14 +195,15 @@ class LinkedList:
         """
         self.free_list.concat(self)
 
-    def find_next(self, value, from_):
+    def find_next(self, value: Any, from_: DoublyLinkedListNode) \
+            -> DoublyLinkedListNode:
         # sentinel
         self.head.value = value
         while from_.next != value:
             from_ = from_.next
         return from_
 
-    def size(self):
+    def size(self) -> int:
         """
         Calculates the size of the list in !! linear time !!
         :return: the size of the list
@@ -192,7 +217,7 @@ class LinkedList:
             current = current.next
         return size
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         if self.is_empty():
             return "[]"
 
