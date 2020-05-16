@@ -13,7 +13,7 @@ class LinkedList:
         Header.prev == last element
 
     This implementation supports many O(1) time operations such
-    as insertions, deletions and clearing at any given node in the list.
+    as insertions, concatenation, deletions and clearing at any given node in the list.
     Problem is that the size of the list cannot be returned in constant time
     because inter-list splice would otherwise not be in constant time.
 
@@ -49,7 +49,8 @@ class LinkedList:
         :return: None
         """
         # assert b is not before a and t is not in <a....b>
-
+        if self.is_empty():
+            raise ValueError("empty list")
         # cut out from a to b
         a_ = a.next
         b_ = b.prev
@@ -105,16 +106,14 @@ class LinkedList:
         Pops off the front element.
         :return: None
         """
-        assert not self.is_empty()
-        self.remove(self.head.next)
+        self.remove(self.first())
 
     def pop_back(self):
         """
         Pop off the tail
         :return: None
         """
-        assert not self.is_empty()
-        self.remove(self.head.prev)
+        self.remove(self.last())
 
     def insert_after(self, value, node):
         """
@@ -123,7 +122,7 @@ class LinkedList:
         :param node: value gets placed after this node
         :return: the new node
         """
-        assert self.free_list.is_empty()  # make sure free list is empty
+        assert not self.free_list.is_empty()  # make sure free list is non-empty
         a_ = self.free_list.first()  # obtain an item a_ to hold value
         self.move_after(a_, node)  # put it to the right place
         a_.value = value  # and fill it with the right content
@@ -152,7 +151,7 @@ class LinkedList:
         :param value: the new tail
         :return: None
         """
-        self.insert_after(value, self.head.prev)
+        self.insert_after(value, self.last())
 
     def concat(self, other_list):
         """
@@ -162,7 +161,7 @@ class LinkedList:
         """
         self.splice(other_list.first(),
                     other_list.last(),
-                    self.head.prev)
+                    self.last())
 
     def clear_all(self):
         """
@@ -187,8 +186,22 @@ class LinkedList:
         size = 0
         if self.is_empty():
             return size
-        current = self.head.next
+        current = self.first()
         while current:
             size += 1
             current = current.next
         return size
+
+    def __repr__(self):
+        if self.is_empty():
+            return "[]"
+
+        current = self.first()
+        result = "["
+        while current:
+            result += str(current.value)
+            result += ", "
+            current = current.next
+        result[:-2]
+        result += "]"
+        return result
