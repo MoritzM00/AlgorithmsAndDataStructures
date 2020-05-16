@@ -178,3 +178,17 @@ class LinkedList:
         while from_.next != value:
             from_ = from_.next
         return from_
+
+    def size(self):
+        """
+        Calculates the size of the list in !! linear time !!
+        :return: the size of the list
+        """
+        size = 0
+        if self.is_empty():
+            return size
+        current = self.head.next
+        while current:
+            size += 1
+            current = current.next
+        return size
