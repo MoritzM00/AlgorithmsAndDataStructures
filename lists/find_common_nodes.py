@@ -1,26 +1,26 @@
 from lists.node import Node
 
 
-def has_common_node(n1: Node, n2: Node):
+def has_common_node(node1: Node, node2: Node):
     """
     Checks if two lists have a common node.
 
     Two lists have a common node if one node points to another node in the other list.
-    :param n1: the head of the first list
-    :param n2: the head of the second list
+    :param node1: the head of the first list
+    :param node2: the head of the second list
     :return: true if they have a common node
     """
-    while n1 is not None or n2 is not None:
-        if n1 is not None:
-            n1 = n1.next
-        if n2 is not None:
-            n2 = n2.next
-    return n1 == n2
+    while node1 is not None or node2 is not None:
+        if node1 is not None:
+            node1 = node1.next
+        if node2 is not None:
+            node2 = node2.next
+    return node1 == node2
 
 
 def get_size(head: Node):
     """
-    Returns the size of a list
+    Returns the size of a list.
     :param head: the head of the list
     :return: the size of the list
     """
@@ -47,29 +47,31 @@ def get_nth_node(head: Node, n: int):
     return head
 
 
-def find_common_helper(n1, n2):
-    while n1 is not None and n2 is not None:
-        if n1 == n2:
-            return n1
+def find_common_helper(node1, node2):
+    while node1 is not None and node2 is not None:
+        if node1 == node2:
+            # first common node
+            return node1
         else:
-            n1 = n1.next
-            n2 = n2.next
+            node1 = node1.next
+            node2 = node2.next
+    # no common node found
     return None
 
 
-def find_first_common_node(n1, n2):
+def find_first_common_node(node1, node2):
     """
     Returns the first common node of two lists.
-    :param n1: the head of the first list
-    :param n2: the head of the second list
+    :param node1: the head of the first list
+    :param node2: the head of the second list
     :return: the first common node of two lists
     """
-    size1 = get_size(n1)
-    size2 = get_size(n2)
+    size1 = get_size(node1)
+    size2 = get_size(node2)
     diff = abs(size1 - size2)
 
     if size1 > size2:
         # move forward in the bigger list, so that the elements can be compared side by side
-        return find_common_helper(get_nth_node(n1, diff - 1), n2)
+        return find_common_helper(get_nth_node(node1, diff - 1), node2)
     else:
-        return find_common_helper(get_nth_node(n2, diff - 1), n1)
+        return find_common_helper(get_nth_node(node2, diff - 1), node1)
