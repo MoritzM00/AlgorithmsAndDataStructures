@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, List
 
 
 class DoublyLinkedListNode:
@@ -6,6 +6,9 @@ class DoublyLinkedListNode:
         self.value = value
         self.prev = None
         self.next = None
+
+    def __repr__(self):
+        return "node: " + str(self.value)
 
 
 class LinkedList:
@@ -18,17 +21,44 @@ class LinkedList:
     This implementation supports many O(1) time operations such
     as insertions, concatenation, deletions and clearing at any given node in the list.
     Problem is that the size of the list cannot be returned in constant time
-    because inter-list splice would otherwise not be in constant time.
+    because inter-list _splice would otherwise not be in constant time.
 
     Free_list contains unused items and is used for deletion
     """
 
-    def __init__(self):
+    def __init__(self, data=None):
         self.head = DoublyLinkedListNode()
         self.head.next = self.head
         self.head.prev = self.head
 
-        self.free_list = LinkedList()
+        if data:
+            self.from_iterable(data)
+
+        self.free_list = DoublyLinkedListNode()
+
+    def __iter__(self):
+        current = self.head.next
+
+        while current is not self.head:
+            yield current.value
+            current = current.next
+
+    def __len__(self) -> int:
+        return self.size()
+
+    def __repr__(self) -> str:
+        return f"[{', '.join([str(x) for x in self])}]"
+
+    def __eq__(self, other):
+        if isinstance(other, LinkedList):
+            this = self.head
+            other_ = other.head
+            while this.next is not self.head \
+                    and other_.next is not other.head:
+                if this.value != other_.value:
+                    return False
+            return True
+        return False
 
     def is_empty(self) -> bool:
         """
@@ -56,9 +86,9 @@ class LinkedList:
             raise ValueError("empty list")
         return self.head.prev
 
-    def splice(self, a: DoublyLinkedListNode,
-               b: DoublyLinkedListNode,
-               t: DoublyLinkedListNode) \
+    def __splice(self, a: DoublyLinkedListNode,
+                 b: DoublyLinkedListNode,
+                 t: DoublyLinkedListNode) \
             -> None:
         """
         Cuts out the sublist from a to b and insert after t.
@@ -68,14 +98,15 @@ class LinkedList:
         :return: None
         """
         # assert b is not before a and t is not in <a....b>
-        if self.is_empty():
-            raise ValueError("empty list")
-        # cut out from a to b
-        a_ = a.next
-        b_ = b.prev
 
-        a_.next = b_
-        b_.prev = a_
+        # cut out from a to b
+        a_ = a.prev
+        b_ = b.next
+
+        if a_:
+            a_.next = b_
+        if b_:
+            b_.prev = a_
 
         # insert a....b after t
         t_ = t.next
@@ -95,7 +126,7 @@ class LinkedList:
         :param after: the node where some_node is added
         :return: None
         """
-        self.splice(some_node, some_node, after)
+        self.__splice(some_node, some_node, after)
 
     def move_to_front(self, node: DoublyLinkedListNode) -> None:
         """
@@ -120,21 +151,22 @@ class LinkedList:
         :param node: the node to remove
         :return: None
         """
-        self.move_after(node, self.free_list.head)
+        self.move_after(node, self.free_list)
+        self.free_list = DoublyLinkedListNode()
 
     def pop_front(self) -> None:
         """
         Pops off the front element.
         :return: None
         """
-        self.remove(self.first())
+        self.remove(self.head.next)
 
     def pop_back(self) -> None:
         """
         Pop off the tail
         :return: None
         """
-        self.remove(self.last())
+        self.remove(self.head.prev)
 
     def insert_after(self, value: Any, node: DoublyLinkedListNode) \
             -> DoublyLinkedListNode:
@@ -144,11 +176,9 @@ class LinkedList:
         :param node: value gets placed after this node
         :return: the new node
         """
-        assert not self.free_list.is_empty()  # make sure free list is non-empty
-        a_ = self.free_list.first()  # obtain an item a_ to hold value
-        self.move_after(a_, node)  # put it to the right place
-        a_.value = value  # and fill it with the right content
-        return a_
+        new_node = DoublyLinkedListNode(value)  # obtain an item a_ to hold value
+        self.move_after(new_node, node)  # put it to the right place
+        return new_node
 
     def insert_before(self, value: Any, node: DoublyLinkedListNode) \
             -> DoublyLinkedListNode:
@@ -166,7 +196,7 @@ class LinkedList:
         :param value: the new head
         :return: None
         """
-        self.insert_after(value, self.head)
+        self.insert_before(value, self.head)
 
     def push_back(self, value: Any) -> None:
         """
@@ -174,7 +204,7 @@ class LinkedList:
         :param value: the new tail
         :return: None
         """
-        self.insert_after(value, self.last())
+        self.insert_after(value, self.head.prev)
 
     def concat(self, other_list) -> None:
         """
@@ -183,23 +213,26 @@ class LinkedList:
         :param other_list: the list to concatenate
         :return: None
         """
-        self.splice(other_list.first(),
-                    other_list.last(),
-                    self.last())
+        self._splice(other_list.first(),
+                     other_list.last(),
+                     self.last())
 
-    def clear_all(self) -> None:
+    def clear(self) -> None:
         """
         Clears the list in constant time.
 
         :return: None
         """
-        self.free_list.concat(self)
+        trash = LinkedList()
 
-    def find_next(self, value: Any, from_: DoublyLinkedListNode) \
+        trash.concat(self)
+        del trash
+
+    def find(self, value: Any, from_: DoublyLinkedListNode) \
             -> DoublyLinkedListNode:
         # sentinel
         self.head.value = value
-        while from_.next != value:
+        while from_ and from_.next != value:
             from_ = from_.next
         return from_
 
@@ -212,21 +245,21 @@ class LinkedList:
         if self.is_empty():
             return size
         current = self.first()
-        while current:
+        while current and current is not self.head:
             size += 1
             current = current.next
         return size
 
-    def __repr__(self) -> str:
-        if self.is_empty():
-            return "[]"
+    def from_iterable(self, data: List[Any]):
+        for item in data:
+            self.push_back(item)
 
-        current = self.first()
-        result = "["
-        while current:
-            result += str(current.value)
-            result += ", "
-            current = current.next
-        result[:-2]
-        result += "]"
-        return result
+    def to_array(self) -> List[Any]:
+        """
+        Returns a copy of this list as a python list.
+        :return: a copy of this list as a python list
+        """
+        arr = []
+        for value in self:
+            arr.append(value)
+        return arr
