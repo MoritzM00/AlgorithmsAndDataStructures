@@ -117,8 +117,8 @@ class LinkedList:
         t.next = a
         t_.prev = b
 
-    def move_after(self, some_node: DoublyLinkedListNode,
-                   after: DoublyLinkedListNode) \
+    def _move_after(self, some_node: DoublyLinkedListNode,
+                    after: DoublyLinkedListNode) \
             -> None:
         """
         Moves some_node behind the node after
@@ -134,16 +134,16 @@ class LinkedList:
         :param node: the new front of the list
         :return: None
         """
-        self.move_after(node, self.head)
+        self._move_after(node, self.head)
 
-    def move_to_back(self, node: DoublyLinkedListNode) -> None:
+    def _move_to_back(self, node: DoublyLinkedListNode) -> None:
         """
         Moves the given node to the back of the list.
 
         :param node: the new tail of the list
         :return: None
         """
-        self.move_after(node, self.head.prev)
+        self._move_after(node, self.head.prev)
 
     def remove(self, node: DoublyLinkedListNode) -> None:
         """
@@ -151,7 +151,7 @@ class LinkedList:
         :param node: the node to remove
         :return: None
         """
-        self.move_after(node, self.free_list)
+        self._move_after(node, self.free_list)
         self.free_list = DoublyLinkedListNode()
 
     def pop_front(self) -> None:
@@ -168,7 +168,7 @@ class LinkedList:
         """
         self.remove(self.head.prev)
 
-    def insert_after(self, value: Any, node: DoublyLinkedListNode) \
+    def _insert_after(self, value: Any, node: DoublyLinkedListNode) \
             -> DoublyLinkedListNode:
         """
         Inserts the given value after the given node.
@@ -177,10 +177,10 @@ class LinkedList:
         :return: the new node
         """
         new_node = DoublyLinkedListNode(value)  # obtain an item a_ to hold value
-        self.move_after(new_node, node)  # put it to the right place
+        self._move_after(new_node, node)  # put it to the right place
         return new_node
 
-    def insert_before(self, value: Any, node: DoublyLinkedListNode) \
+    def _insert_before(self, value: Any, node: DoublyLinkedListNode) \
             -> DoublyLinkedListNode:
         """
         Inserts the given value before the given node.
@@ -188,7 +188,22 @@ class LinkedList:
         :param node: value gets placed before this node
         :return: the new node
         """
-        return self.insert_after(value, node.prev)
+        return self._insert_after(value, node.prev)
+
+    def insert_at(self, i: int, value: int) -> None:
+        """
+        Inserts the given value at the i-th position
+        :param i: the i-th position
+        :param value: the inserted value
+        :return: None
+        """
+        current = self.head.next
+        index = 0
+        while index < i and current is not self.head:
+            if index == i:
+                self._insert_before(value, current)
+                return
+            current = current.next
 
     def push_front(self, value: Any) -> None:
         """
@@ -196,7 +211,7 @@ class LinkedList:
         :param value: the new head
         :return: None
         """
-        self.insert_before(value, self.head)
+        self._insert_before(value, self.head)
 
     def push_back(self, value: Any) -> None:
         """
@@ -204,7 +219,7 @@ class LinkedList:
         :param value: the new tail
         :return: None
         """
-        self.insert_after(value, self.head.prev)
+        self._insert_after(value, self.head.prev)
 
     def concat(self, other_list) -> None:
         """
