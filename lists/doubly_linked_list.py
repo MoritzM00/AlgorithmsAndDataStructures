@@ -2,10 +2,20 @@ from typing import Any, List
 
 
 class DoublyLinkedListNode:
-    def __init__(self, value: Any = None):
+    def __init__(self, value: Any = None, is_dummy: bool = False):
+        """
+        Creates a DoublyLinkedListNode with the specified value.
+        If is_dummy is True, then this node will have pointers prev and next to itself instead of None
+        :param value: the value
+        :param is_dummy: true if this node is a dummy
+        """
         self.value = value
-        self.prev = None
-        self.next = None
+        if is_dummy:
+            self.prev = self
+            self.next = self
+        else:
+            self.prev = None
+            self.next = None
 
     def __repr__(self):
         return "node: " + str(self.value)
@@ -23,18 +33,13 @@ class LinkedList:
     Problem is that the size of the list cannot be returned in constant time
     because inter-list _splice would otherwise not be in constant time.
 
-    Free_list contains unused items and is used for deletion
     """
 
     def __init__(self, data=None):
-        self.head = DoublyLinkedListNode()
-        self.head.next = self.head
-        self.head.prev = self.head
+        self.head = DoublyLinkedListNode(is_dummy=True)
 
         if data:
             self.from_iterable(data)
-
-        self.free_list = DoublyLinkedListNode()
 
     def __iter__(self):
         current = self.head.next
@@ -86,9 +91,9 @@ class LinkedList:
             raise ValueError("empty list")
         return self.head.prev
 
-    def __splice(self, a: DoublyLinkedListNode,
-                 b: DoublyLinkedListNode,
-                 t: DoublyLinkedListNode) \
+    def _splice(self, a: DoublyLinkedListNode,
+                b: DoublyLinkedListNode,
+                t: DoublyLinkedListNode) \
             -> None:
         """
         Cuts out the sublist from a to b and insert after t.
@@ -126,9 +131,9 @@ class LinkedList:
         :param after: the node where some_node is added
         :return: None
         """
-        self.__splice(some_node, some_node, after)
+        self._splice(some_node, some_node, after)
 
-    def move_to_front(self, node: DoublyLinkedListNode) -> None:
+    def _move_to_front(self, node: DoublyLinkedListNode) -> None:
         """
         Moves the given node to the front of the list.
         :param node: the new front of the list
@@ -151,8 +156,9 @@ class LinkedList:
         :param node: the node to remove
         :return: None
         """
-        self._move_after(node, self.free_list)
-        self.free_list = DoublyLinkedListNode()
+        trash = DoublyLinkedListNode(is_dummy=True)
+        self._move_after(node, trash)
+        del trash
 
     def pop_front(self) -> None:
         """
@@ -230,7 +236,7 @@ class LinkedList:
         """
         self._splice(other_list.first(),
                      other_list.last(),
-                     self.last())
+                     self.head.prev)
 
     def clear(self) -> None:
         """
@@ -243,13 +249,17 @@ class LinkedList:
         trash.concat(self)
         del trash
 
-    def find(self, value: Any, from_: DoublyLinkedListNode) \
-            -> DoublyLinkedListNode:
+    def find(self, value: Any) -> DoublyLinkedListNode:
+        current = self.first()
+
         # sentinel
         self.head.value = value
-        while from_ and from_.next != value:
-            from_ = from_.next
-        return from_
+
+        while current.value != value:
+            current = current.next
+
+        if current != self.head:
+            return current
 
     def size(self) -> int:
         """
