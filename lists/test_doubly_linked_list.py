@@ -38,10 +38,23 @@ class DoublyLinkedListTestCase(TestCase):
         self.assertEqual([i for i in range(1, 9)], lst.to_array())
 
     def test_concat(self):
-        pass
+        lst = LinkedList([1, 2, 3])
+        other_lst = LinkedList([4, 5, 6])
 
-    def test_clear_all(self):
-        pass
+        lst.concat(other_lst)
+
+        self.assertEqual([1, 2, 3, 4, 5, 6], lst.to_array())
+
+        lst.concat(LinkedList())
+
+        self.assertEqual([1, 2, 3, 4, 5, 6], lst.to_array())
+
+    def test_clear(self):
+        lst = LinkedList([1, 2, 3])
+
+        lst.clear()
+
+        self.assertEqual([], lst.to_array())
 
 
 if __name__ == '__main__':
