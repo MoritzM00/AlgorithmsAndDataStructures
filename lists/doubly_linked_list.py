@@ -234,8 +234,10 @@ class LinkedList:
         :param other_list: the list to concatenate
         :return: None
         """
-        self._splice(other_list.first(),
-                     other_list.last(),
+        if other_list.is_empty():
+            return
+        self._splice(other_list.head.next,
+                     other_list.head.prev,
                      self.head.prev)
 
     def clear(self) -> None:
