@@ -1,4 +1,4 @@
-class SlowDeque:
+class Dequeue:
     """
     Slow implementation of a double ended queue (deque) using two stacks
 
@@ -7,12 +7,8 @@ class SlowDeque:
     -- input stack ---> output stack        out
                                      _________
 
-    When only dequeue_back and enqueue_front is in Use (FIFO one sided queue)
-    then dequeue_back has an amortized Time Complexity of O(1).
-
-    If you make use of enqueue_back and dequeue_front (double-ended queue) then this amortized
-    runtime gets destroyed because out and in change their roles.
-    Therefore, this is a really slow implementation of a deque and should not be used.
+    Dequeue_back has an amortized time complexity of O(1)
+    The other operations are O(1)
     """
 
     def __init__(self):
@@ -24,7 +20,7 @@ class SlowDeque:
 
     def dequeue_back(self):
         if len(self.output) == 0:
-            while len(self.output) > 0:
+            while len(self.input) > 0:
                 e = self.input.pop()
                 self.output.append(e)
         return self.output.pop()
@@ -34,7 +30,6 @@ class SlowDeque:
 
     def dequeue_front(self):
         if len(self.input) == 0:
-            while len(self.input) > 0:
-                e = self.output.pop()
-                self.input.append(e)
-        return self.input.pop()
+            return self.output.pop(0)
+        else:
+            return self.input.pop()
