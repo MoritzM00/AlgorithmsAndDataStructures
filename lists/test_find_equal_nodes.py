@@ -1,6 +1,6 @@
 from unittest import TestCase, main
 
-from lists.find_common_nodes import has_common_node, find_first_common_node
+from lists.find_equal_nodes import has_equal_node, find_first_equal_node
 from lists.node import Node
 
 
@@ -28,11 +28,11 @@ class FindCommonNodesTestCase(TestCase):
         # List 1: n1 -> a -> b -> c -> None
         #                       ^
         # List 2: n2 -> d -> b  |
-        # so b is the first common node to find here
+        # so b is the first equal node to find here
 
-    def test_has_common_node(self):
-        self.assertTrue(has_common_node(self.n1, self.n2))
-        self.assertEqual(find_first_common_node(self.n1, self.n2), self.b)
+    def test_has_equal_node(self):
+        self.assertTrue(has_equal_node(self.n1, self.n2))
+        self.assertEqual(find_first_equal_node(self.n1, self.n2), self.b)
 
 
 if __name__ == '__main__':
