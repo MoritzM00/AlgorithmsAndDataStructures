@@ -39,11 +39,5 @@ def find_files_worker(suffix, path, acc):
 
     elif path.endswith(suffix):
         acc.append(path)
+
     return acc
-
-
-def test1(test_dir):
-    print(find_files('.c', os.path.join(os.sep, os.getcwd(), test_dir)))
-
-
-test1('testdir')
