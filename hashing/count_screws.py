@@ -1,15 +1,19 @@
-from typing import List
-from collections import namedtuple
+from typing import List, NamedTuple
 from random import randint
 import numpy as np
 
-Screw = namedtuple('Screw', 'length diameter')
+
+class Screw(NamedTuple):
+    """
+    A Screw Type consists of the length and the diameter of the screw.
+    """
+    length: int
+    diameter: int
 
 
 def count_screws(screws: List[Screw]) -> List[List[int]]:
     """
-    A Screw Type consists of the length and the diameter of the screw.
-    Calculates the amount of screw types which occur.
+    Calculates the amount of screw types which occur in the given list.
     :param screws: A list of screws
     :return: An 2D Array, where the row index is the length,
      and the column index is the diameter of the screw.
