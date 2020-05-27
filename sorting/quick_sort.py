@@ -1,26 +1,28 @@
-def partition(arr, low, high):
-    pivot = arr[high]  # pivot
-    i = (low - 1)  # Index of smaller element
-
-    for j in range(low, high):
-
-        # If current element is smaller than or
-        # equal to pivot
-        if arr[j] <= pivot:
-            i += 1  # increment index of smaller element
-            temp = arr[i]
-            arr[i] = arr[j]
-            arr[j] = temp
-
-    temp = arr[i + 1]
-    arr[i + 1] = arr[high]
-    arr[high] = temp
-    return i + 1
+from math import floor
 
 
-def quick_sort(arr, low, high):
-    if low < high:
-        p = partition(arr, low, high)
+def partition(A, lo, hi):
+    pivot = A[floor((hi + lo) / 2)]
+    i = lo
+    j = hi
+    while True:
+        while A[i] < pivot:
+            i += 1
+        while A[j] > pivot:
+            j -= 1
+        if i >= j:
+            return j
+        # swap A[i] with A[j]
+        temp = A[i]
+        A[i] = A[j]
+        A[j] = temp
+        i += 1
+        j -= 1
 
-        quick_sort(arr, low, p - 1)
-        quick_sort(arr, p + 1, high)
+
+def quick_sort(A, lo, hi):
+    if lo < hi:
+        p_border = partition(A, lo, hi)
+
+        quick_sort(A, lo, p_border)
+        quick_sort(A, p_border + 1, hi)
