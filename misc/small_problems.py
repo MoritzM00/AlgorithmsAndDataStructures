@@ -29,6 +29,8 @@ def test_min_max_rank():
     e = 3
     assert (3, 4) == get_min_max_rank(A, e)
 
+    assert (2, 2) == get_min_max_rank(A, 2)
+
     A = [1, 2, 2, 1, 1]
     assert (-1, -1) == get_min_max_rank(A, e)
 
