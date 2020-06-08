@@ -20,7 +20,8 @@ def get_min_max_rank(A: List[int], e: int) -> (int, int):
             if max == -1:
                 max = rank
             else:
-                max += 1
+                rank += 1
+                max = rank
     return min, max
 
 
@@ -36,6 +37,10 @@ def test_min_max_rank():
 
     e = 1
     assert (0, 2) == get_min_max_rank(A, e)
+
+    A = [5, 1, 2, 3, 4, 5, 5]
+    e = 5
+    assert (0, 6) == get_min_max_rank(A, e)
 
 
 if __name__ == '__main__':
