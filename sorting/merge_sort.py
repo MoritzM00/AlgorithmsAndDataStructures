@@ -1,4 +1,4 @@
-def mergesort(items):
+def merge_sort(items):
     if len(items) <= 1:
         return items
 
@@ -6,8 +6,8 @@ def mergesort(items):
     left = items[:mid]
     right = items[mid:]
 
-    left = mergesort(left)
-    right = mergesort(right)
+    left = merge_sort(left)
+    right = merge_sort(right)
 
     return merge(left, right)
 
