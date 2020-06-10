@@ -1,9 +1,9 @@
-from typing import Iterable, Any, List
+from typing import Any, List
 
 
 class BArray:
     """
-    An BArray keeps track of its valid size. None Values are not allowed.
+    An BArray keeps track of its valid size.
     """
 
     def __init__(self, data: List[int]):
