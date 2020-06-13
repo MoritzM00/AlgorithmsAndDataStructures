@@ -58,7 +58,7 @@ class LRU_Cache(object):
             # remove oldest item
             self.del_lru_item()
         self.cache[key] = value
-        if self.cache.__contains__(key):
+        if key in self.cache:
             self.cache.move_to_end(key)
         else:
             self.cache[key] = None
