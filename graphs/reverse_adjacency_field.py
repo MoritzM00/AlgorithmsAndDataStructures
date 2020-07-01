@@ -1,11 +1,11 @@
 def reverse_adj_field(n, offsets, edges):
     """
     Reverses the an adjacency field graph
-    :param n: number of vertexes
+    :param n: number of vertices
     :param offset: a list which contains the start index of the vertex i at offset[i]
                 in the edges list
-    :param edges:
-    :return:
+    :param edges: a list containing the vertices. Offet determines, which edge is meant
+    :return: the new offset and edges list for the reversed graph
     """
     # calculate indegree of each vertex
     incident = [0 for _ in range(n)]
