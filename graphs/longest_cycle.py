@@ -1,9 +1,11 @@
 from collections import deque
 
 
-def longest_cyle(v, vertices, edges):
+def longest_cycle(v, vertices, edges):
     """
-    Finds the longest cycle in the graph, that contains the vertex u
+    Finds the longest cycle in the graph, that contains the vertex u.
+    Uses a modified breath first search: If a backward-edge is found then it checks for
+    the length of the cycle to this point
     :param v: the vertex v
     :param vertices: list of vertexes
     :param edges: edge list (u,v) for u,v element of V
