@@ -1,6 +1,3 @@
-from collections import deque
-
-
 class Graph:
     def __init__(self, n: int):
         """
@@ -10,29 +7,34 @@ class Graph:
         self.vertexCount = n
         self.m = [[0 for col in range(n)] for row in range(n)]
 
-    def max_connected_components(self):
-        return max(
-            [self.find_connected_components(vertex) for vertex in range(self.vertexCount)]
-        )
 
-    def find_connected_components(self, start_vertex: int):
+    def num_connectivity(self):
         """
-        Returns the number of connected components of this graph
-        :param start_vertex: the starting point of the modified BFS algorithm
-        :return: number of connected components for this start vertex
+        Finds the number of connected components in this graph
+        :return: the number of connected components
         """
-        components = 1
-        markers = [False for _ in range(self.vertexCount)]
-        q = deque()
-        q.append(start_vertex)
-        markers[start_vertex] = True
-
-        while not len(q) == 0:
-            current = q.pop()
+        n = 0
+        marked = [False for _ in range(self.vertexCount)]
+        while True:
+            # find next unmarked vertex
+            v = -1
             for i in range(self.vertexCount):
-                if self.m[current][i] and not markers[i]:
-                    markers[i] = True
-                    q.append(i)
-                    components += 1
+                if not marked[i]:
+                    v = i
+                    break
+            if v == -1:
+                break
 
-        return components
+            # if we found another vertex, then we have another
+            # connected component
+            n += 1
+
+            # run DFS, that marks all vertex that are reachable from v
+            s = []
+            s.append(v)
+            while not len(s) == 0:
+                v = s.pop()
+                marked[v] = True
+                for u in range(self.vertexCount):
+                    if self.m[v][u]:
+                        s.append(u)
