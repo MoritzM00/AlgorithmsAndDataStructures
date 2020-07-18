@@ -1,3 +1,12 @@
+"""
+Let p and q be two matrices with dimension (w x h).
+For each pixel p[i][j] there is a given brightness value between 0 and 1.
+
+Given this input, compute the minimum error E(c) = sum( (p_i,c(i) - q_i,c(i))^2 )
+c is a given cut-path with c element of C = { {0, ... , w-1}^h | for each i < h: |c_i - c_i-1| < 1}
+"""
+
+
 def min_error(p, q, w: int, h: int) -> float:
     """
     Returns the minimum error between two 2D Arrays of [0, 1] with dimension w x h
@@ -14,9 +23,16 @@ def min_error(p, q, w: int, h: int) -> float:
         err = 0
         j_ = j
         for i in range(h):
-            left = (p[i][j_ - 1] - q[i][j_ - 1]) ** 2
+            if j_ - 1 >= 0:
+                left = (p[i][j_ - 1] - q[i][j_ - 1]) ** 2
+            else:
+                left = float("+inf")
             mid = (p[i][j_] - q[i][j_]) ** 2
-            right = (p[i][j_ + 1] - q[i][j_ + 1]) ** 2
+
+            if j_ + 1 < w:
+                right = (p[i][j_ + 1] - q[i][j_ + 1]) ** 2
+            else:
+                right = float("+inf")
 
             current_min = min(left, mid, right)
             err += current_min
@@ -47,9 +63,16 @@ def min_cut(p, q, w: int, h: int):
         c = [-1 for _ in range(h)]
         j_ = j
         for i in range(h):
-            left = (p[i][j_ - 1] - q[i][j_ - 1]) ** 2
+            if j_ - 1 >= 0:
+                left = (p[i][j_ - 1] - q[i][j_ - 1]) ** 2
+            else:
+                left = float("+inf")
             mid = (p[i][j_] - q[i][j_]) ** 2
-            right = (p[i][j_ + 1] - q[i][j_ + 1]) ** 2
+
+            if j_ + 1 < w:
+                right = (p[i][j_ + 1] - q[i][j_ + 1]) ** 2
+            else:
+                right = float("+inf")
 
             current_min = min(left, mid, right)
             err += current_min
@@ -66,3 +89,22 @@ def min_cut(p, q, w: int, h: int):
             min_c = c
 
     return min_c
+
+
+def example():
+    from random import random
+
+    w = 20
+    h = 50
+    # random floats between 0 and 1
+    p = [[random() for _ in range(w)] for _ in range(h)]
+    q = [[random() for _ in range(w)] for _ in range(h)]
+
+    print(f"Minimum error between p and q: E(c) = {min_error(p, q, w, h)}")
+    c = min_cut(p, q, w, h)
+
+    for row, col in enumerate(c):
+        print((p[row][col] - q[row][col]) ** 2)
+
+
+example()
