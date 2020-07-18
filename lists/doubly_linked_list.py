@@ -290,3 +290,11 @@ class LinkedList:
         for value in self:
             arr.append(value)
         return arr
+
+    def unique_element_count(self):
+        """
+        Returns the number of unique elements
+        :return: the number of unique elements
+        """
+        unique = set(self)
+        return len(unique)
