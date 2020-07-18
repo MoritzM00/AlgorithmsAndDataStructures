@@ -12,12 +12,18 @@ def min_error(p, q, w: int, h: int) -> float:
     min_err = float("+inf")
     for j in range(w - 1):
         err = 0
+        j_ = j
         for i in range(h):
-            left = (p[i][j - 1] - q[i][j - 1]) ** 2
-            mid = (p[i][j] - q[i][j]) ** 2
-            right = (p[i][j + 1] - q[i][j + 1]) ** 2
+            left = (p[i][j_ - 1] - q[i][j_ - 1]) ** 2
+            mid = (p[i][j_] - q[i][j_]) ** 2
+            right = (p[i][j_ + 1] - q[i][j_ + 1]) ** 2
 
-            err += min(left, mid, right)
+            current_min = min(left, mid, right)
+            err += current_min
+            if current_min == left:
+                j_ -= 1
+            elif current_min == right:
+                j_ += 1
         if err < min_err:
             min_err = err
     return min_err
@@ -39,19 +45,22 @@ def min_cut(p, q, w: int, h: int):
     for j in range(w - 1):
         err = 0
         c = [-1 for _ in range(h)]
+        j_ = j
         for i in range(h):
-            left = (p[i][j - 1] - q[i][j - 1]) ** 2
-            mid = (p[i][j] - q[i][j]) ** 2
-            right = (p[i][j + 1] - q[i][j + 1]) ** 2
+            left = (p[i][j_ - 1] - q[i][j_ - 1]) ** 2
+            mid = (p[i][j_] - q[i][j_]) ** 2
+            right = (p[i][j_ + 1] - q[i][j_ + 1]) ** 2
 
             current_min = min(left, mid, right)
             err += current_min
             if current_min == left:
-                c[i] = j - 1
+                c[i] = j_ - 1
+                j_ -= 1
             elif current_min == mid:
-                c[i] = j
+                c[i] = j_
             else:
-                c[i] = j + 1
+                c[i] = j_ + 1
+                j_ += 1
         if err < min_err:
             min_err = err
             min_c = c
