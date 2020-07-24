@@ -103,8 +103,7 @@ def example():
     print(f"Minimum error between p and q: E(c) = {min_error(p, q, w, h)}")
     c = min_cut(p, q, w, h)
 
+    print(c)
+
     for row, col in enumerate(c):
         print((p[row][col] - q[row][col]) ** 2)
-
-
-example()
