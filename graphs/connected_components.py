@@ -4,9 +4,8 @@ class Graph:
         Initiates the graph of vertex count n
         :param n: vertex count
         """
-        self.vertexCount = n
+        self.vertex_count = n
         self.m = [[0 for col in range(n)] for row in range(n)]
-
 
     def num_connectivity(self):
         """
@@ -14,11 +13,11 @@ class Graph:
         :return: the number of connected components
         """
         n = 0
-        marked = [False for _ in range(self.vertexCount)]
+        marked = [False for _ in range(self.vertex_count)]
         while True:
             # find next unmarked vertex
             v = -1
-            for i in range(self.vertexCount):
+            for i in range(self.vertex_count):
                 if not marked[i]:
                     v = i
                     break
@@ -30,11 +29,10 @@ class Graph:
             n += 1
 
             # run DFS, that marks all vertex that are reachable from v
-            s = []
-            s.append(v)
+            s = [v]
             while not len(s) == 0:
                 v = s.pop()
                 marked[v] = True
-                for u in range(self.vertexCount):
+                for u in range(self.vertex_count):
                     if self.m[v][u]:
                         s.append(u)
